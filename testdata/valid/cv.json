@@ -1,0 +1,81 @@
+{
+    "basics":{
+        "full_name": "Mykyta Kissa",
+        "position": "Backend GO developer",
+        "description": "Higly motivated junior specialist",
+        "email": "test@test.com",
+        "phone": "+48123123123",
+        "links": {
+            "LinkedIn": "http://www.linkedin.com/in/mykyta-kissa-684aa833a"
+        }
+
+    },
+    "education": [
+        {
+            "institution": "Elektroniczne Zakady Naukowe",
+            "institution_website": "https://ezn.edu.pl",
+            "fields_of_study": "Computer science",
+            "description": "The best tech-school in the state",
+            "from": "2023-09-01T00:00:00Z",
+            "to": "2028-06-30T00:00:00Z"
+        }
+    ],
+    "experience": [
+        {
+            "company": "Letiko",
+            "company_website": "https://letiko.com",
+            "position": "Frontend developer",
+            "description": "Developing of CRM page for CarAssistant",
+            "stack": ["Nuxt", "TypeScript", "Tailwind CSS"],
+            "from": "2025-08-01T00:00:00Z",
+            "to": "2026-08-01T00:00:00Z"
+        }
+    ],
+    "skill_groups": [
+        {
+            "name": "Hard skills",
+            "skills": ["Git", "Golang development", "PostgeSQL", "HTML, CSS, JS"]
+        },
+        {
+            "name": "Soft skills",
+            "skills": ["Teamwork", "Time management"]
+        }
+    ],
+    "certificates": [
+        {
+            "name": "CCNA: Switching, Routing, and Wireless Essentials",
+            "issuer": "Cisco",
+            "url": "https://www.credly.com/badges/b5d6a038-929e-4a88-b5fd-abd5d1afaf02/public_url"
+        },
+        {
+            "name": "CCNA: Introduction to Networks",
+            "issuer": "Cisco",
+            "url": "https://www.credly.com/badges/9f04cc78-305f-4b95-a64e-f9207e381010/public_url"
+        }
+    ],
+    "projects": [
+        {
+            "name": "cvgen",
+            "description": "Generator cv in HTML format from JSON",
+            "url": "https://github.com/NikitaKissa/cvgen"
+        },
+        {
+            "name": "CarAssistant CRM",
+            "url": "https://carassistant.ai"
+        }
+    ],
+    "languages": [
+        {
+            "name": "Ukrainian",
+            "proficiency": "Native"
+        },
+        {
+            "name": "Russian",
+            "proficiency": "Native"
+        },
+        {
+            "name": "English",
+            "proficiency": "B2"
+        }
+    ]
+}

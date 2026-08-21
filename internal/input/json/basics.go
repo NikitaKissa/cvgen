@@ -3,6 +3,7 @@ package input_json
 import (
 	"net/url"
 
+	"github.com/NikitaKissa/cvgen/internal/core"
 	"github.com/NikitaKissa/cvgen/internal/cv"
 )
 
@@ -15,7 +16,7 @@ type Basics struct {
 	Links       Links   `json:"links"`
 }
 
-type Links map[string]url.URL // ex: "LinkedIn": "https://www.linkedin.com/in/mykyta-kissa-684aa833a"
+type Links map[string]core.StringUrl // ex: "LinkedIn": "https://www.linkedin.com/in/mykyta-kissa-684aa833a"
 
 func (b *Basics) ToModel() cv.Basics {
 	return cv.Basics{
@@ -24,6 +25,16 @@ func (b *Basics) ToModel() cv.Basics {
 		Description: b.Description,
 		Email:       b.Email,
 		Phone:       b.Phone,
-		Links:       cv.Links(b.Links),
+		Links:       stringToLinks(b.Links),
 	}
+}
+
+func stringToLinks(strings Links) cv.Links {
+	links := make(map[string]url.URL, len(strings))
+
+	for name, rawURL := range strings {
+		u := rawURL.Parse()
+		links[name] = *u
+	}
+	return links
 }

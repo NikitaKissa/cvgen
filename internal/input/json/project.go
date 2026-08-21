@@ -1,22 +1,21 @@
 package input_json
 
 import (
-	"net/url"
-
+	"github.com/NikitaKissa/cvgen/internal/core"
 	"github.com/NikitaKissa/cvgen/internal/cv"
 )
 
 type Project struct {
-	Name        string  `json:"name"`
-	Description *string `json:"description"`
-	Url         url.URL `json:"url"`
+	Name        string         `json:"name"`
+	Description *string        `json:"description"`
+	Url         core.StringUrl `json:"url"`
 }
 
 func (p *Project) ToModel() cv.Project {
 	return cv.Project{
 		Name:        p.Name,
 		Description: p.Description,
-		Url:         p.Url,
+		Url:         *p.Url.Parse(),
 	}
 }
 
