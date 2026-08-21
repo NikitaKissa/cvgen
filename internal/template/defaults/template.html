@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Basics.FullName }} — CV</title>
+</head>
+<body>
+
+    <header>
+        <h1>{{ .Basics.FullName }}</h1>
+
+        {{ if .Basics.Position }}
+            <h2>{{ .Basics.Position }}</h2>
+        {{ end }}
+
+        {{ if .Basics.Description }}
+            <p>{{ .Basics.Description }}</p>
+        {{ end }}
+
+        {{ if .Basics.Email }}
+            <p>{{ .Basics.Email }}</p>
+        {{ end }}
+
+        {{ if .Basics.Phone }}
+            <p>{{ .Basics.Phone }}</p>
+        {{ end }}
+    </header>
+
+    {{ if .Experience }}
+    <section>
+        <h2>Experience</h2>
+        {{ range .Experience }}
+        <article>
+            <h3>{{ .Position }}</h3>
+            <p>{{ .Company }}</p>
+            <p>{{ .From }} — {{ .To }}</p>
+
+            {{ if .Description }}
+                <p>{{ .Description }}</p>
+            {{ end }}
+
+            {{ if .Stack }}
+            <ul>
+                {{ range .Stack }}
+                <li>{{ . }}</li>
+                {{ end }}
+            </ul>
+            {{ end }}
+        </article>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{ if .Education }}
+    <section>
+        <h2>Education</h2>
+        {{ range .Education }}
+        <article>
+            <h3>{{ .Institution }}</h3>
+            <p>{{ .FieldOfStudy }}</p>
+            <p>{{ .From }} — {{ .To }}</p>
+        </article>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{ if .SkillGroups }}
+    <section>
+        <h2>Skills</h2>
+        {{ range .SkillGroups }}
+        <article>
+            <h3>{{ .Name }}</h3>
+            <ul>
+                {{ range .Skills }}
+                <li>{{ . }}</li>
+                {{ end }}
+            </ul>
+        </article>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{ if .Projects }}
+    <section>
+        <h2>Projects</h2>
+        {{ range .Projects }}
+        <article>
+            <h3>{{ .Name }}</h3>
+
+            {{ if .Description }}
+                <p>{{ .Description }}</p>
+            {{ end }}
+
+            {{ if .Url }}
+                <p><a href="{{ .Url }}">{{ .Url }}</a></p>
+            {{ end }}
+        </article>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{ if .Certificates }}
+    <section>
+        <h2>Certificates</h2>
+        {{ range .Certificates }}
+        <article>
+            <h3>{{ .Name }}</h3>
+            <p>{{ .Issuer }}</p>
+            <p><a href="{{ .Url }}">{{ .Url }}</a></p>
+        </article>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    {{ if .Languages }}
+    <section>
+        <h2>Languages</h2>
+        <ul>
+            {{ range .Languages }}
+            <li>{{ .Name }} — {{ .Proficiency }}</li>
+            {{ end }}
+        </ul>
+    </section>
+    {{ end }}
+
+</body>
+</html>
