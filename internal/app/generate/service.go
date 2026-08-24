@@ -48,21 +48,22 @@ func Run(ctx context.Context, opts Options) error {
 			err,
 		)
 	}
+	file.Close()
 
 	// Template section
 
-	templateHtml, err := template.LoadTemplate("")
+	templateHtml, err := template.LoadTemplate(opts.TemplatePath)
 	if err != nil {
 		return fmt.Errorf("error during loading template: %w", err)
 
 	}
-	style, err := template.LoadStyle("")
+	style, err := template.LoadStyle(opts.StylePath)
 	if err != nil {
 		return fmt.Errorf("error during loading style: %w", err)
 	}
 
-	templateData := template.ModelToTemplateData(cv)
-	output, err := template.Render(templateHtml, style, templateData)
+	templateData := template.ModelToTemplateData(cv, style)
+	output, err := template.Render(templateHtml, templateData)
 	if err != nil {
 		return fmt.Errorf("error during rendering output html: %w", err)
 	}

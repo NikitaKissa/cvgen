@@ -3,6 +3,7 @@ package template
 import (
 	_ "embed"
 	"fmt"
+	"html/template"
 	"os"
 
 	"github.com/NikitaKissa/cvgen/internal/cv"
@@ -36,8 +37,9 @@ func LoadStyle(path string) (string, error) {
 	return string(data), nil
 }
 
-func ModelToTemplateData(cv cv.CV) TemplateData {
+func ModelToTemplateData(cv cv.CV, style string) TemplateData {
 	return TemplateData{
+		Style:        template.CSS(style),
 		Basics:       cv.Basics,
 		Education:    cv.Education,
 		Experience:   cv.Experience,

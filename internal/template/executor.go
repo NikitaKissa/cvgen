@@ -9,7 +9,7 @@ import (
 )
 
 type TemplateData struct {
-	Style        string
+	Style        template.CSS
 	Basics       cv.Basics
 	Education    []cv.Education
 	Experience   []cv.Experience
@@ -19,8 +19,7 @@ type TemplateData struct {
 	Languages    []cv.Language
 }
 
-func Render(templateHtml string, style string, data TemplateData) ([]byte, error) {
-	data.Style = style
+func Render(templateHtml string, data TemplateData) ([]byte, error) {
 	tmpl, err := template.New("cv").Funcs(FuncMap()).Parse(templateHtml)
 	if err != nil {
 		return nil, fmt.Errorf("parse template: %w", err)

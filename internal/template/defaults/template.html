@@ -3,46 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ .Basics.FullName }} — CV</title>
+    <style>{{ .Style }}</style>
 </head>
 <body>
+<div class="cv">
 
-    <header>
-        <h1>{{ .Basics.FullName }}</h1>
-
-        {{ if .Basics.Position }}
-            <h2>{{ .Basics.Position }}</h2>
-        {{ end }}
+    <header class="cv-header">
+        <h1 class="cv-name">{{ .Basics.FullName }}</h1>
+        <p class="cv-position">{{ .Basics.Position }}</p>
 
         {{ if .Basics.Description }}
-            <p>{{ .Basics.Description }}</p>
+        <p class="cv-description">{{ .Basics.Description }}</p>
         {{ end }}
 
-        {{ if .Basics.Email }}
-            <p>{{ .Basics.Email }}</p>
-        {{ end }}
+        <div class="cv-contacts">
+            {{ if .Basics.Email }}
+            <span class="cv-contact">{{ .Basics.Email }}</span>
+            {{ end }}
+            {{ if .Basics.Phone }}
+            <span class="cv-contact">{{ .Basics.Phone }}</span>
+            {{ end }}
+        </div>
 
-        {{ if .Basics.Phone }}
-            <p>{{ .Basics.Phone }}</p>
+        {{ if .Basics.Links }}
+        <ul class="cv-links">
+            {{ range $name, $url := .Basics.Links }}
+            <li class="cv-link"><a href="{{ $url }}">{{ $name }}</a></li>
+            {{ end }}
+        </ul>
         {{ end }}
     </header>
 
     {{ if .Experience }}
-    <section>
-        <h2>Experience</h2>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Experience</h2>
         {{ range .Experience }}
-        <article>
-            <h3>{{ .Position }}</h3>
-            <p>{{ .Company }}</p>
-            <p>{{ .From }} — {{ .To }}</p>
+        <article class="cv-entry">
+            <div class="cv-entry-header">
+                <h3 class="cv-entry-title">{{ .Position }}</h3>
+                <span class="cv-entry-dates">
+                    {{ .From.Format "Jan 2006" }} — {{ if .To }}{{ .To.Format "Jan 2006" }}{{ else }}Present{{ end }}
+                </span>
+            </div>
+            <p class="cv-entry-subtitle">
+                {{ if .CompanyWebsite }}<a href="{{ .CompanyWebsite }}">{{ .Company }}</a>{{ else }}{{ .Company }}{{ end }}
+            </p>
 
             {{ if .Description }}
-                <p>{{ .Description }}</p>
+            <p class="cv-entry-description">{{ .Description }}</p>
             {{ end }}
 
             {{ if .Stack }}
-            <ul>
+            <ul class="cv-stack">
                 {{ range .Stack }}
-                <li>{{ . }}</li>
+                <li class="cv-tag">{{ . }}</li>
                 {{ end }}
             </ul>
             {{ end }}
@@ -52,47 +66,52 @@
     {{ end }}
 
     {{ if .Education }}
-    <section>
-        <h2>Education</h2>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Education</h2>
         {{ range .Education }}
-        <article>
-            <h3>{{ .Institution }}</h3>
-            <p>{{ .FieldOfStudy }}</p>
-            <p>{{ .From }} — {{ .To }}</p>
+        <article class="cv-entry">
+            <div class="cv-entry-header">
+                <h3 class="cv-entry-title">
+                    {{ if .InstitutionWebsite }}<a href="{{ .InstitutionWebsite }}">{{ .Institution }}</a>{{ else }}{{ .Institution }}{{ end }}
+                </h3>
+                <span class="cv-entry-dates">
+                    {{ .From.Format "Jan 2006" }} — {{ if .To }}{{ .To.Format "Jan 2006" }}{{ else }}Present{{ end }}
+                </span>
+            </div>
+            <p class="cv-entry-subtitle">{{ .FieldOfStudy }}</p>
+
+            {{ if .Description }}
+            <p class="cv-entry-description">{{ .Description }}</p>
+            {{ end }}
         </article>
         {{ end }}
     </section>
     {{ end }}
 
     {{ if .SkillGroups }}
-    <section>
-        <h2>Skills</h2>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Skills</h2>
         {{ range .SkillGroups }}
-        <article>
-            <h3>{{ .Name }}</h3>
-            <ul>
+        <div class="cv-skill-group">
+            <h3 class="cv-skill-group-title">{{ .Name }}</h3>
+            <ul class="cv-skill-list">
                 {{ range .Skills }}
                 <li>{{ . }}</li>
                 {{ end }}
             </ul>
-        </article>
+        </div>
         {{ end }}
     </section>
     {{ end }}
 
     {{ if .Projects }}
-    <section>
-        <h2>Projects</h2>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Projects</h2>
         {{ range .Projects }}
-        <article>
-            <h3>{{ .Name }}</h3>
-
+        <article class="cv-entry">
+            <h3 class="cv-entry-title"><a href="{{ .Url }}">{{ .Name }}</a></h3>
             {{ if .Description }}
-                <p>{{ .Description }}</p>
-            {{ end }}
-
-            {{ if .Url }}
-                <p><a href="{{ .Url }}">{{ .Url }}</a></p>
+            <p class="cv-entry-description">{{ .Description }}</p>
             {{ end }}
         </article>
         {{ end }}
@@ -100,28 +119,27 @@
     {{ end }}
 
     {{ if .Certificates }}
-    <section>
-        <h2>Certificates</h2>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Certificates</h2>
         {{ range .Certificates }}
-        <article>
-            <h3>{{ .Name }}</h3>
-            <p>{{ .Issuer }}</p>
-            <p><a href="{{ .Url }}">{{ .Url }}</a></p>
+        <article class="cv-entry">
+            <h3 class="cv-entry-title"><a href="{{ .Url }}">{{ .Name }}</a></h3>
+            <p class="cv-entry-subtitle">{{ .Issuer }}</p>
         </article>
         {{ end }}
     </section>
     {{ end }}
 
     {{ if .Languages }}
-    <section>
-        <h2>Languages</h2>
-        <ul>
+    <section class="cv-section">
+        <h2 class="cv-section-title">Languages</h2>
+        <ul class="cv-languages-list">
             {{ range .Languages }}
-            <li>{{ .Name }} — {{ .Proficiency }}</li>
+            <li class="cv-language">{{ .Name }} — {{ .Proficiency }}</li>
             {{ end }}
         </ul>
     </section>
     {{ end }}
 
+</div>
 </body>
-</html>
