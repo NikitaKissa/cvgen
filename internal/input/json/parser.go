@@ -15,11 +15,14 @@ func New() *Parser {
 }
 
 func (p *Parser) Parse(r io.Reader) (cv.CV, error) {
-	var input InputDTO
+	var inputData InputDTO
 
 	dec := json.NewDecoder(r)
-	if err := dec.Decode(&input); err != nil {
-		return cv.CV{}, fmt.Errorf("error during decoding json: %w", err)
+	if err := dec.Decode(&inputData); err != nil {
+		return cv.CV{}, fmt.Errorf(
+			"error during decoding json: %w",
+			err,
+		)
 	}
 
 	// Validation is for future
@@ -27,6 +30,6 @@ func (p *Parser) Parse(r io.Reader) (cv.CV, error) {
 	// 	return cv.CV{}, fmt.Errorf("json validation error: %w", err)
 	// }
 
-	result := input.ToModel()
+	result := inputData.ToModel()
 	return result, nil
 }

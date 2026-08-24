@@ -23,7 +23,8 @@ func newGenerateCmd() *cobra.Command {
 				StylePath:    stylePath,
 				OutputPath:   outputPath,
 			}
-			return generate.Run(cmd.Context(), opts)
+			err := generate.Run(cmd.Context(), opts)
+			return handleErr(err)
 		},
 	}
 

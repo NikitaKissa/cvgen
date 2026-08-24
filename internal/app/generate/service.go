@@ -24,7 +24,7 @@ func Run(ctx context.Context, opts Options) error {
 		return fmt.Errorf(
 			"unknown input file extension `%s`: %w",
 			ext,
-			core.ErrInvalidArgument,
+			core.ErrInvalidFileExtension,
 		)
 	}
 
