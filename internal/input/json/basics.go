@@ -8,6 +8,7 @@ import (
 )
 
 type Basics struct {
+	Photo       *string `json:"photo"`
 	FullName    string  `json:"full_name"`
 	Position    string  `json:"position"`
 	Description string  `json:"description"`
@@ -20,6 +21,7 @@ type Links map[string]core.StringUrl // ex: "LinkedIn": "https://www.linkedin.co
 
 func (b *Basics) ToModel() cv.Basics {
 	return cv.Basics{
+		Photo:       b.Photo,
 		FullName:    b.FullName,
 		Position:    b.Position,
 		Description: b.Description,

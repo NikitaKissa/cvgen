@@ -39,8 +39,16 @@ func LoadStyle(path string) (string, error) {
 
 func ModelToTemplateData(cv cv.CV, style string) TemplateData {
 	return TemplateData{
-		Style:        template.CSS(style),
-		Basics:       cv.Basics,
+		Style: template.CSS(style),
+		Basics: Basics{
+			FullName:    cv.Basics.FullName,
+			Position:    cv.Basics.Position,
+			Description: cv.Basics.Description,
+			Email:       cv.Basics.Email,
+			Phone:       cv.Basics.Phone,
+			Photo:       template.URL(derefOrEmpty(cv.Basics.Photo)),
+			Links:       cv.Basics.Links,
+		},
 		Education:    cv.Education,
 		Experience:   cv.Experience,
 		SkillGroups:  cv.SkillGroups,
@@ -48,4 +56,11 @@ func ModelToTemplateData(cv cv.CV, style string) TemplateData {
 		Projects:     cv.Projects,
 		Languages:    cv.Languages,
 	}
+}
+
+func derefOrEmpty(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }

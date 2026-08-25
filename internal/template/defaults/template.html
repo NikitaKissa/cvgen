@@ -9,30 +9,38 @@
 <div class="cv">
 
     <header class="cv-header">
-        <h1 class="cv-name">{{ .Basics.FullName }}</h1>
-        <p class="cv-position">{{ .Basics.Position }}</p>
+        <div class="cv-header-content">
+            <h1 class="cv-name">{{ .Basics.FullName }}</h1>
+            <p class="cv-position">{{ .Basics.Position }}</p>
 
-        {{ if .Basics.Description }}
-        <p class="cv-description">{{ .Basics.Description }}</p>
-        {{ end }}
-
-        <div class="cv-contacts">
-            {{ if .Basics.Email }}
-            <span class="cv-contact">{{ .Basics.Email }}</span>
+            {{ if .Basics.Description }}
+            <p class="cv-description">{{ .Basics.Description }}</p>
             {{ end }}
-            {{ if .Basics.Phone }}
-            <span class="cv-contact">{{ .Basics.Phone }}</span>
+
+            <div class="cv-contacts">
+                {{ if .Basics.Email }}
+                <span class="cv-contact">{{ .Basics.Email }}</span>
+                {{ end }}
+                {{ if .Basics.Phone }}
+                <span class="cv-contact">{{ .Basics.Phone }}</span>
+                {{ end }}
+            </div>
+
+            {{ if .Basics.Links }}
+            <ul class="cv-links">
+                {{ range $name, $url := .Basics.Links }}
+                <li class="cv-link"><a href="{{ $url }}">{{ $name }}</a></li>
+                {{ end }}
+            </ul>
             {{ end }}
         </div>
 
-        {{ if .Basics.Links }}
-        <ul class="cv-links">
-            {{ range $name, $url := .Basics.Links }}
-            <li class="cv-link"><a href="{{ $url }}">{{ $name }}</a></li>
-            {{ end }}
-        </ul>
+        {{ if .Basics.Photo }}
+        <img class="cv-photo" src="{{ .Basics.Photo }}" alt="{{ .Basics.FullName }}">
         {{ end }}
     </header>
+
+
 
     {{ if .Experience }}
     <section class="cv-section">

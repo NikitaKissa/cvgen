@@ -1,6 +1,8 @@
 package input_json
 
-import "github.com/NikitaKissa/cvgen/internal/cv"
+import (
+	"github.com/NikitaKissa/cvgen/internal/cv"
+)
 
 type InputDTO struct {
 	Basics       Basics        `json:"basics"`

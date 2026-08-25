@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/NikitaKissa/cvgen/internal/asset"
 	"github.com/NikitaKissa/cvgen/internal/core"
 	"github.com/NikitaKissa/cvgen/internal/input"
 	input_json "github.com/NikitaKissa/cvgen/internal/input/json"
@@ -50,6 +51,14 @@ func Run(ctx context.Context, opts Options) error {
 	}
 	file.Close()
 
+	// Assets section
+
+	resolvedPhoto, err := asset.LoadPhoto(derefOrEmpty(cv.Basics.Photo))
+	if err != nil {
+		return fmt.Errorf("resolving `basics.photo`: %w", err)
+	}
+	cv.Basics.Photo = &resolvedPhoto
+
 	// Template section
 
 	templateHtml, err := template.LoadTemplate(opts.TemplatePath)
@@ -81,4 +90,11 @@ func Run(ctx context.Context, opts Options) error {
 	}
 
 	return nil
+}
+
+func derefOrEmpty(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }

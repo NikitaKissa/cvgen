@@ -4,20 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-
-	"github.com/NikitaKissa/cvgen/internal/cv"
 )
-
-type TemplateData struct {
-	Style        template.CSS
-	Basics       cv.Basics
-	Education    []cv.Education
-	Experience   []cv.Experience
-	SkillGroups  []cv.SkillGroup
-	Certificates []cv.Certificate
-	Projects     []cv.Project
-	Languages    []cv.Language
-}
 
 func Render(templateHtml string, data TemplateData) ([]byte, error) {
 	tmpl, err := template.New("cv").Funcs(FuncMap()).Parse(templateHtml)

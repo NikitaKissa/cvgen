@@ -1,5 +1,6 @@
 {
     "basics":{
+        "photo": "/tmp/test-cvgen.webp",
         "full_name": "Mykyta Kissa",
         "position": "Backend GO developer",
         "description": "Higly motivated junior specialist",

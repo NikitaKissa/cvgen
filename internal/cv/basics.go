@@ -3,6 +3,7 @@ package cv
 import "net/url"
 
 type Basics struct {
+	Photo       *string
 	FullName    string
 	Position    string
 	Description string

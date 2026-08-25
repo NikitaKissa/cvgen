@@ -26,7 +26,7 @@ func (p *Parser) Parse(r io.Reader) (cv.CV, error) {
 	}
 
 	// Validation is for future
-	// if err := input.Validate(); err != nil {
+	// if err := inputData.Validate(); err != nil {
 	// 	return cv.CV{}, fmt.Errorf("json validation error: %w", err)
 	// }
 
