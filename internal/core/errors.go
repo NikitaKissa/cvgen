@@ -7,4 +7,5 @@ var (
 	ErrInvalidFileExtension = errors.New("invalid file extension")
 	ErrOpenFile             = errors.New("error while opening file")
 	ErrWriteFile            = errors.New("error while writing file")
+	ErrWriteOutput          = errors.New("error while writing output")
 )

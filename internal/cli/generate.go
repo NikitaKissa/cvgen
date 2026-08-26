@@ -25,6 +25,7 @@ func newGenerateCmd() *cobra.Command {
 				TemplatePath: templatePath,
 				StylePath:    stylePath,
 				OutputPath:   outputPath,
+				Stdout:       !cmd.Flags().Changed("output"),
 			}
 			err := generate.Run(cmd.Context(), opts)
 			return handleErr(err)

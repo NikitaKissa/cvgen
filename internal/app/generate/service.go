@@ -3,6 +3,7 @@ package generate
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/NikitaKissa/cvgen/internal/compile"
@@ -32,21 +33,34 @@ func Run(ctx context.Context, opts Options) error {
 		return fmt.Errorf("error during compiling cv: %w", err)
 	}
 
-	if err := writeOutputFile(opts.OutputPath, output); err != nil {
+	if err := writeOutput(opts.Stdout, opts.OutputPath, output); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func writeOutputFile(outputPath string, output []byte) error {
-	if err := os.WriteFile(outputPath, output, 0664); err != nil {
-		return fmt.Errorf(
-			"%w `%s`: %s",
-			core.ErrWriteFile,
-			outputPath,
-			err,
-		)
+func writeOutput(isStdout bool, outputPath string, output []byte) error {
+	var w io.Writer
+	if isStdout {
+		w = os.Stdout
+	} else {
+		file, err := os.Create(outputPath)
+		if err != nil {
+			return fmt.Errorf(
+				"%w `%s`: %s",
+				core.ErrWriteFile,
+				outputPath,
+				err,
+			)
+		}
+		defer file.Close()
+
+		w = file
+	}
+
+	if _, err := w.Write(output); err != nil {
+		return fmt.Errorf("%w: %s", core.ErrWriteOutput, err)
 	}
 
 	return nil
