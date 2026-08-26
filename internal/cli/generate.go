@@ -33,7 +33,7 @@ func newGenerateCmd() *cobra.Command {
 	cmd.Flags().StringVar(&stylePath, "style", "", "path to custom CSS file (optional)")
 	cmd.Flags().StringVar(&outputPath, "output", "resume.html", "output HTML file path")
 
-	cmd.MarkFlagRequired("output")
+	cmd.MarkFlagRequired("input")
 
 	return cmd
 }

@@ -11,7 +11,7 @@ func Execute() error {
 	}
 
 	root.AddCommand(newGenerateCmd())
-	// root.AddCommand(newValidateCmd())
+	root.AddCommand(newVerifyCmd())
 	root.AddCommand(newVersionCmd())
 
 	return root.Execute()
