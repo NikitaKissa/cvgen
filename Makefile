@@ -6,7 +6,7 @@ cvgen-run:
 CVGEN_NAME := cvgen
 CVGEN_BUILD_DIR ?= ./build
 
-VERSION := $(shell git describe --tags --always --dirty)
+VERSION := $(shell git describe --tags --always --dirty | sed 's/-g[0-9a-f]*//')
 COMMIT  := $(shell git rev-parse --short HEAD)
 DATE    := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
