@@ -15,9 +15,12 @@ func newVerifyCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "verify",
+		Use:   "verify [flags] <file-path>",
 		Short: "Validate CV JSON, template and style without writing output",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			inputPath = args[0]
+
 			opts := verify.Options{
 				InputPath:    inputPath,
 				TemplatePath: templatePath,
@@ -35,11 +38,8 @@ func newVerifyCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inputPath, "input", "", "path to CV JSON file (required)")
 	cmd.Flags().StringVar(&templatePath, "template", "", "path to custom HTML template (optional)")
 	cmd.Flags().StringVar(&stylePath, "style", "", "path to custom CSS file (optional)")
-
-	cmd.MarkFlagRequired("input")
 
 	return cmd
 }

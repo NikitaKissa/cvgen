@@ -14,9 +14,12 @@ func newGenerateCmd() *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "generate",
+		Use:   "generate [flags] <file-path>",
 		Short: "Generate a self-contained HTML resume",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			inputPath = args[0]
+
 			opts := generate.Options{
 				InputPath:    inputPath,
 				TemplatePath: templatePath,
@@ -28,12 +31,9 @@ func newGenerateCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&inputPath, "input", "", "path to CV JSON file (required)")
 	cmd.Flags().StringVar(&templatePath, "template", "", "path to custom HTML template (optional)")
 	cmd.Flags().StringVar(&stylePath, "style", "", "path to custom CSS file (optional)")
 	cmd.Flags().StringVar(&outputPath, "output", "resume.html", "output HTML file path")
-
-	cmd.MarkFlagRequired("input")
 
 	return cmd
 }

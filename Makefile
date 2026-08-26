@@ -1,7 +1,7 @@
 cvgen-run:
 	@go run cmd/cvgen/main.go $(ARGS)
 
-# make cvgen-run ARGS="generate --input ./testdata/valid/cv.json --output /tmp/cv.html"
+# make cvgen-run ARGS="generate --output /tmp/cv.html ./testdata/valid/cv.json"
 
 CVGEN_NAME := cvgen
 CVGEN_BUILD_DIR ?= ./build
