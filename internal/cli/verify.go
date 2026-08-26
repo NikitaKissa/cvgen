@@ -54,5 +54,6 @@ func printVerifyReport(cmd *cobra.Command, r verify.Report) {
 	fmt.Fprintf(out, "  certificates:  %d\n", r.Certificates)
 	fmt.Fprintf(out, "  projects:      %d\n", r.Projects)
 	fmt.Fprintf(out, "  languages:     %d\n", r.Languages)
+	fmt.Fprintf(out, "  clause:        %t\n", r.Clause)
 	fmt.Fprintf(out, "  rendered size: %d bytes (not saved)\n", r.OutputSize)
 }

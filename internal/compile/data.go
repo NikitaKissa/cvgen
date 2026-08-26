@@ -32,6 +32,7 @@ func ModelToTemplateData(model cv.CV, style string) tmpl.TemplateData {
 		Certificates: model.Certificates,
 		Projects:     model.Projects,
 		Languages:    model.Languages,
+		Clause:       model.Clause,
 	}
 }
 

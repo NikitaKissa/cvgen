@@ -15,6 +15,7 @@ type TemplateData struct {
 	Certificates []cv.Certificate
 	Projects     []cv.Project
 	Languages    []cv.Language
+	Clause       *string
 }
 
 type Basics struct {

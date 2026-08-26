@@ -8,4 +8,5 @@ type CV struct {
 	Certificates []Certificate
 	Projects     []Project
 	Languages    []Language
+	Clause       *string
 }

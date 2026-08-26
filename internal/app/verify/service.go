@@ -19,6 +19,7 @@ type Report struct {
 	Certificates int
 	Projects     int
 	Languages    int
+	Clause       bool
 
 	// OutputSize is the size in bytes of the HTML that *would* be
 	// produced. Nothing is written to disk.
@@ -60,6 +61,7 @@ func Run(ctx context.Context, opts Options) (Report, error) {
 		Certificates: len(model.Certificates),
 		Projects:     len(model.Projects),
 		Languages:    len(model.Languages),
+		Clause:       model.Clause != nil,
 		OutputSize:   len(output),
 	}, nil
 }

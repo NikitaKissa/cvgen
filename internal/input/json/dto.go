@@ -12,6 +12,7 @@ type InputDTO struct {
 	Certificates []Certificate `json:"certificates"`
 	Projects     []Project     `json:"projects"`
 	Languages    []Language    `json:"languages"`
+	Clause       *string       `json:"clause"`
 }
 
 // for future
@@ -28,5 +29,6 @@ func (dto *InputDTO) ToModel() cv.CV {
 		Certificates: certificatesToModel(dto.Certificates),
 		Projects:     projectsToModel(dto.Projects),
 		Languages:    languagesToModel(dto.Languages),
+		Clause:       dto.Clause,
 	}
 }

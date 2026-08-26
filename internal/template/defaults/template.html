@@ -149,5 +149,10 @@
     </section>
     {{ end }}
 
+    {{ if .Clause }}
+    <section class="cv-section cv-clause">
+        <p class="cv-clause-text">{{ .Clause }}</p>
+    </section>
+    {{ end }}
 </div>
 </body>

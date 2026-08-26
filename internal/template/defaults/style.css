@@ -230,3 +230,17 @@ body {
         border-radius: 0;
     }
 }
+
+.cv-clause {
+    margin-top: 36px;
+    margin-bottom: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    break-inside: avoid;
+}
+
+.cv-clause-text {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
