@@ -12,7 +12,7 @@ func Execute() error {
 
 	root.AddCommand(newGenerateCmd())
 	// root.AddCommand(newValidateCmd())
-	// root.AddCommand(newVersionCmd())
+	root.AddCommand(newVersionCmd())
 
 	return root.Execute()
 }
