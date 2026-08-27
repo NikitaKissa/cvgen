@@ -13,19 +13,25 @@ type Experience struct {
 	Position       string          `json:"position"`
 	Description    *string         `json:"description"`
 	Stack          []string        `json:"stack"`
-	From           time.Time       `json:"from"`
-	To             *time.Time      `json:"to"` // nil means "till now"
+	From           core.Date       `json:"from"`
+	To             *core.Date      `json:"to"` // nil means "till now"
 }
 
 func (e *Experience) ToModel() cv.Experience {
+	var toTime *time.Time
+	if e.To != nil {
+		t := e.To.ToTime()
+		toTime = &t
+	}
+
 	return cv.Experience{
 		Company:        e.Company,
 		CompanyWebsite: e.CompanyWebsite.Parse(),
 		Position:       e.Position,
 		Description:    e.Description,
 		Stack:          e.Stack,
-		From:           e.From,
-		To:             e.To,
+		From:           e.From.ToTime(),
+		To:             toTime,
 	}
 }
 

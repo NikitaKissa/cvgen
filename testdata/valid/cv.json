@@ -1,6 +1,6 @@
 {
     "basics":{
-        "photo": "/tmp/test-cvgen.webp",
+        "photo": "/tmp/test-cvgen.jpeg",
         "full_name": "Mykyta Kissa",
         "position": "Backend GO developer",
         "description": "Higly motivated junior specialist",
@@ -17,8 +17,8 @@
             "institution_website": "https://ezn.edu.pl",
             "field_of_study": "Computer science",
             "description": "The best tech-school in the state",
-            "from": "2023-09-01T00:00:00Z",
-            "to": "2028-06-30T00:00:00Z"
+            "from": "2023-09",
+            "to": "2028-06"
         }
     ],
     "experience": [
@@ -28,8 +28,8 @@
             "position": "Frontend developer",
             "description": "Developing of CRM page for CarAssistant",
             "stack": ["Nuxt", "TypeScript", "Tailwind CSS"],
-            "from": "2025-08-01T00:00:00Z",
-            "to": "2026-08-01T00:00:00Z"
+            "from": "2025-08",
+            "to": "2026-08"
         }
     ],
     "skill_groups": [

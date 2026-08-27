@@ -12,18 +12,24 @@ type Education struct {
 	InstitutionWebsite *core.StringUrl `json:"institution_website"`
 	FieldOfStudy       string          `json:"field_of_study"`
 	Description        *string         `json:"description"`
-	From               time.Time       `json:"from"`
-	To                 *time.Time      `json:"to"` // nil means "till now"
+	From               core.Date       `json:"from"`
+	To                 *core.Date      `json:"to"` // nil means "till now"
 }
 
 func (e *Education) ToModel() cv.Education {
+	var toTime *time.Time
+	if e.To != nil {
+		t := e.To.ToTime()
+		toTime = &t
+	}
+
 	return cv.Education{
 		Institution:        e.Institution,
 		InstitutionWebsite: e.InstitutionWebsite.Parse(),
 		FieldOfStudy:       e.FieldOfStudy,
 		Description:        e.Description,
-		From:               e.From,
-		To:                 e.To,
+		From:               e.From.ToTime(),
+		To:                 toTime,
 	}
 }
 
