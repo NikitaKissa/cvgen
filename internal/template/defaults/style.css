@@ -48,30 +48,31 @@ body {
  */
 
 .cv-header {
-    display: flex;
+    margin-bottom: 42px;
+    padding-bottom: 24px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 30px;
+
     align-items: stretch;
-    gap: 28px;
+
     border-bottom: 1px solid var(--border);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
 }
 
 .cv-header-content {
-    flex: 1;
     min-width: 0;
 }
 
 .cv-photo {
     display: block;
-    width: 112px;
-    height: auto;
-    align-self: stretch;
+    width: 200px;
+    height: 100%;
 
     object-fit: cover;
     object-position: center;
 
     border-radius: 3px;
-    flex-shrink: 0;
 }
 
 .cv-name {
@@ -91,6 +92,7 @@ body {
 }
 
 .cv-description {
+    text-align: justify;
     max-width: 620px;
     margin-top: 14px;
     font-size: 13.5px;
@@ -114,16 +116,32 @@ body {
 
 /*
  * Links
+ *
+ * Links keep the text color of whatever section they're in
+ * (same as before) — only a thin, offset underline is added,
+ * so it reads as a link on sight without relying on :hover,
+ * which is unavailable in the printed / PDF output.
  */
 
 a {
     color: inherit;
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    text-underline-offset: 2.5px;
 }
 
 a:hover {
-    color: var(--accent);
+    text-decoration-color: currentColor;
 }
+
+
+/*
+ * Links list (header)
+ *
+ * This is the one place links were already accent-colored
+ * by design — kept as is.
+ */
 
 .cv-links {
     list-style: none;
@@ -137,12 +155,6 @@ a:hover {
 .cv-links a {
     color: var(--accent);
     font-weight: 500;
-    text-decoration: none;
-}
-
-.cv-links a:hover {
-    text-decoration: underline;
-    text-underline-offset: 2px;
 }
 
 
@@ -200,15 +212,6 @@ a:hover {
     color: var(--text-primary);
 }
 
-.cv-entry-title a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.cv-entry-title a:hover {
-    color: var(--accent);
-}
-
 .cv-entry-dates {
     font-size: 11.5px;
     line-height: 1.4;
@@ -224,16 +227,8 @@ a:hover {
     color: var(--text-secondary);
 }
 
-.cv-entry-subtitle a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.cv-entry-subtitle a:hover {
-    color: var(--accent);
-}
-
 .cv-entry-description {
+    text-align: justify;
     margin-top: 7px;
 
     font-size: 12.5px;
@@ -274,26 +269,31 @@ a:hover {
  * Skills
  */
 
-.cv-skill-group {
-    margin-bottom: 14px;
+.cv-skills {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+    row-gap: 20px;
 }
 
-.cv-skill-group:last-child {
+.cv-skill-group {
     margin-bottom: 0;
+    break-inside: avoid;
 }
 
 .cv-skill-group-title {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 
     font-size: 12.5px;
     line-height: 1.4;
     font-weight: 600;
+
     color: var(--text-primary);
 }
 
 .cv-skill-list {
     list-style: disc;
-    padding-left: 18px;
+    padding-left: 17px;
 
     font-size: 12.5px;
     line-height: 1.55;
@@ -302,6 +302,7 @@ a:hover {
 
 .cv-skill-list li {
     margin-bottom: 2px;
+    padding-left: 2px;
 }
 
 
@@ -375,7 +376,10 @@ a:hover {
 
     a {
         color: inherit;
-        text-decoration: none;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+        text-underline-offset: 2.5px;
     }
 
     .cv-links a {

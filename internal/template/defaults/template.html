@@ -114,10 +114,13 @@
 
     {{ if .SkillGroups }}
     <section class="cv-section">
-        <h2 class="cv-section-title">Skills</h2>
+    <h2 class="cv-section-title">Skills</h2>
+
+    <div class="cv-skills">
         {{ range .SkillGroups }}
         <div class="cv-skill-group">
             <h3 class="cv-skill-group-title">{{ .Name }}</h3>
+
             <ul class="cv-skill-list">
                 {{ range .Skills }}
                 <li>{{ . }}</li>
@@ -125,7 +128,8 @@
             </ul>
         </div>
         {{ end }}
-    </section>
+    </div>
+</section>
     {{ end }}
 
     {{ if .Projects }}
