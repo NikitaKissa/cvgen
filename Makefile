@@ -20,3 +20,8 @@ cvgen-build:
 
 cvgen-install: cvgen-build
 	install -Dm755 $(CVGEN_BUILD_DIR)/$(CVGEN_NAME) /usr/local/bin/$(CVGEN_NAME)
+
+# CVgen with ai tools
+
+cvgen-ai-run:
+	@LD_LIBRARY_PATH="$PWD/native/linux-amd64/lib" go run cmd/cvgen-ai/main.go
