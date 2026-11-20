@@ -58,7 +58,7 @@ func createContext(model llamaModel) (llamaContext, error) {
 	}, nil
 }
 
-func createSampler() (llamaSampler, error) {
+func createSampler(temperature float32) (llamaSampler, error) {
 	params := C.llama_sampler_chain_default_params()
 
 	sampler := C.llama_sampler_chain_init(params)
@@ -66,11 +66,12 @@ func createSampler() (llamaSampler, error) {
 		return llamaSampler{}, fmt.Errorf("failed to create sampler chain")
 	}
 
-	// The chain takes ownership of the sampler.
-	C.llama_sampler_chain_add(
-		sampler,
-		C.llama_sampler_init_greedy(),
-	)
+	if temperature <= 0 {
+		C.llama_sampler_chain_add(sampler, C.llama_sampler_init_greedy())
+	} else {
+		C.llama_sampler_chain_add(sampler, C.llama_sampler_init_temp(C.float(temperature)))
+		C.llama_sampler_chain_add(sampler, C.llama_sampler_init_dist(C.LLAMA_DEFAULT_SEED))
+	}
 
 	return llamaSampler{
 		ptr: uintptr(unsafe.Pointer(sampler)),
@@ -111,27 +112,54 @@ func generate(
 	ctx context.Context,
 	model llamaModel,
 	llamaCtx llamaContext,
-	sampler llamaSampler,
+	chatTemplate string,
+	rawPrompt bool,
 	req llm.GenerateRequest,
 ) (string, error) {
-	if req.Prompt == "" {
-		return "", fmt.Errorf("llama: prompt is empty")
-	}
-
-	if model.ptr == 0 || llamaCtx.ptr == 0 || sampler.ptr == 0 {
+	if model.ptr == 0 || llamaCtx.ptr == 0 {
 		return "", fmt.Errorf("llama: engine is not initialized")
 	}
 
-	if len(req.Prompt) > math.MaxInt32 {
+	if req.Prompt != "" && len(req.Messages) > 0 {
+		return "", fmt.Errorf("llama: request cannot contain both prompt and messages")
+	}
+	if rawPrompt && len(req.Messages) > 0 {
+		return "", fmt.Errorf("llama: messages are not supported in raw prompt mode")
+	}
+	if req.Prompt == "" && len(req.Messages) == 0 {
+		return "", fmt.Errorf("llama: prompt is empty")
+	}
+
+	prompt := req.Prompt
+	if !rawPrompt {
+		messages := req.Messages
+		if len(messages) == 0 {
+			messages = []llm.Message{{Role: "user", Content: req.Prompt}}
+		}
+
+		var err error
+		prompt, err = applyChatTemplate(model, chatTemplate, messages)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	if len(prompt) > math.MaxInt32 {
 		return "", fmt.Errorf("llama: prompt is too large")
 	}
 
 	if req.MaxTokens <= 0 {
 		req.MaxTokens = maxGeneratedTokens
 	}
+	parseSpecial := !rawPrompt
 
 	cModel := (*C.struct_llama_model)(unsafe.Pointer(model.ptr))
 	cCtx := (*C.struct_llama_context)(unsafe.Pointer(llamaCtx.ptr))
+	sampler, err := createSampler(req.Temperature)
+	if err != nil {
+		return "", err
+	}
+	defer freeSampler(sampler)
 	cSampler := (*C.struct_llama_sampler)(unsafe.Pointer(sampler.ptr))
 
 	vocab := C.llama_model_get_vocab(cModel)
@@ -140,17 +168,17 @@ func generate(
 	}
 
 	// Tokenize prompt.
-	cPrompt := C.CString(req.Prompt)
+	cPrompt := C.CString(prompt)
 	defer C.free(unsafe.Pointer(cPrompt))
 
 	tokenCount := C.llama_tokenize(
 		vocab,
 		cPrompt,
-		C.int32_t(len(req.Prompt)),
+		C.int32_t(len(prompt)),
 		nil,
 		0,
 		true,
-		false,
+		C.bool(parseSpecial),
 	)
 
 	if tokenCount == -2147483648 {
@@ -170,11 +198,11 @@ func generate(
 	tokenCount = C.llama_tokenize(
 		vocab,
 		cPrompt,
-		C.int32_t(len(req.Prompt)),
+		C.int32_t(len(prompt)),
 		&tokens[0],
 		C.int32_t(len(tokens)),
 		true,
-		false,
+		C.bool(parseSpecial),
 	)
 
 	if tokenCount < 0 {
@@ -281,6 +309,67 @@ func generate(
 	}
 
 	return string(output), nil
+}
+
+func applyChatTemplate(model llamaModel, template string, messages []llm.Message) (string, error) {
+	cModel := (*C.struct_llama_model)(unsafe.Pointer(model.ptr))
+	var cTemplate *C.char
+	if template != "" {
+		cTemplate = C.CString(template)
+		defer C.free(unsafe.Pointer(cTemplate))
+	} else {
+		cTemplate = (*C.char)(unsafe.Pointer(C.llama_model_chat_template(cModel, nil)))
+		if cTemplate == nil {
+			return "", fmt.Errorf("llama: model has no chat template; set one with llama.WithChatTemplate or enable raw prompt mode")
+		}
+	}
+
+	chatMemory := C.malloc(C.size_t(len(messages)) * C.size_t(unsafe.Sizeof(C.struct_llama_chat_message{})))
+	if chatMemory == nil {
+		return "", fmt.Errorf("llama: failed to allocate chat messages")
+	}
+	defer C.free(chatMemory)
+	chat := unsafe.Slice((*C.struct_llama_chat_message)(chatMemory), len(messages))
+	var allocatedStrings []unsafe.Pointer
+	defer func() {
+		for _, pointer := range allocatedStrings {
+			C.free(pointer)
+		}
+	}()
+
+	for i, message := range messages {
+		if message.Role == "" {
+			return "", fmt.Errorf("llama: message role is empty")
+		}
+		role := C.CString(message.Role)
+		content := C.CString(message.Content)
+		allocatedStrings = append(allocatedStrings, unsafe.Pointer(role), unsafe.Pointer(content))
+		chat[i].role = role
+		chat[i].content = content
+	}
+
+	length := C.llama_chat_apply_template(cTemplate, (*C.struct_llama_chat_message)(chatMemory), C.size_t(len(messages)), true, nil, 0)
+	if length <= 0 {
+		return "", fmt.Errorf("llama: failed to apply chat template")
+	}
+	if length == math.MaxInt32 {
+		return "", fmt.Errorf("llama: formatted prompt is too large")
+	}
+
+	buffer := make([]C.char, int(length)+1)
+	formattedLength := C.llama_chat_apply_template(
+		cTemplate,
+		(*C.struct_llama_chat_message)(chatMemory),
+		C.size_t(len(messages)),
+		true,
+		&buffer[0],
+		C.int32_t(len(buffer)),
+	)
+	if formattedLength < 0 || formattedLength > length {
+		return "", fmt.Errorf("llama: failed to format chat prompt")
+	}
+
+	return C.GoStringN(&buffer[0], C.int(formattedLength)), nil
 }
 
 func tokenToPiece(

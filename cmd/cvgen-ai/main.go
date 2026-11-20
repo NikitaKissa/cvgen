@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/NikitaKissa/cvgen/internal/llm"
 	"github.com/NikitaKissa/cvgen/internal/llm/llama"
@@ -21,6 +22,9 @@ func main() {
 	}
 	fmt.Println("Model loaded.")
 
+	start := time.Now()
 	a, _ := gpt.Generate(ctx, llm.DefaultRequest("2 + 2 = ?"))
+
 	fmt.Println(a)
+	fmt.Println("Time taken:", time.Since(start))
 }

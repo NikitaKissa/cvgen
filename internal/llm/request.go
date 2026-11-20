@@ -1,6 +1,12 @@
 package llm
 
+type Message struct {
+	Role    string
+	Content string
+}
+
 type GenerateRequest struct {
+	Messages    []Message
 	Prompt      string
 	MaxTokens   int
 	Temperature float32
