@@ -23,5 +23,7 @@ cvgen-install: cvgen-build
 
 # CVgen with ai tools
 
+PWD := $(shell pwd)
+
 cvgen-ai-run:
-	@LD_LIBRARY_PATH="$PWD/native/linux-amd64/lib" go run cmd/cvgen-ai/main.go
+	@LD_LIBRARY_PATH="$(PWD)/native/linux-amd64/lib" go run cmd/cvgen-ai/main.go

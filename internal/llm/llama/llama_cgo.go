@@ -15,6 +15,8 @@ import (
 	"fmt"
 	"math"
 	"unsafe"
+
+	"github.com/NikitaKissa/cvgen/internal/llm"
 )
 
 const maxGeneratedTokens = 512
@@ -110,9 +112,9 @@ func generate(
 	model llamaModel,
 	llamaCtx llamaContext,
 	sampler llamaSampler,
-	prompt string,
+	req llm.GenerateRequest,
 ) (string, error) {
-	if prompt == "" {
+	if req.Prompt == "" {
 		return "", fmt.Errorf("llama: prompt is empty")
 	}
 
@@ -120,8 +122,12 @@ func generate(
 		return "", fmt.Errorf("llama: engine is not initialized")
 	}
 
-	if len(prompt) > math.MaxInt32 {
+	if len(req.Prompt) > math.MaxInt32 {
 		return "", fmt.Errorf("llama: prompt is too large")
+	}
+
+	if req.MaxTokens <= 0 {
+		req.MaxTokens = maxGeneratedTokens
 	}
 
 	cModel := (*C.struct_llama_model)(unsafe.Pointer(model.ptr))
@@ -134,13 +140,13 @@ func generate(
 	}
 
 	// Tokenize prompt.
-	cPrompt := C.CString(prompt)
+	cPrompt := C.CString(req.Prompt)
 	defer C.free(unsafe.Pointer(cPrompt))
 
 	tokenCount := C.llama_tokenize(
 		vocab,
 		cPrompt,
-		C.int32_t(len(prompt)),
+		C.int32_t(len(req.Prompt)),
 		nil,
 		0,
 		true,
@@ -164,7 +170,7 @@ func generate(
 	tokenCount = C.llama_tokenize(
 		vocab,
 		cPrompt,
-		C.int32_t(len(prompt)),
+		C.int32_t(len(req.Prompt)),
 		&tokens[0],
 		C.int32_t(len(tokens)),
 		true,
@@ -222,7 +228,7 @@ func generate(
 	output := make([]byte, 0)
 
 	// Generate tokens.
-	for i := 0; i < maxGeneratedTokens; i++ {
+	for i := 0; i < req.MaxTokens; i++ {
 		if err := ctx.Err(); err != nil {
 			return string(output), err
 		}

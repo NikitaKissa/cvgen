@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"sync"
+
+	"github.com/NikitaKissa/cvgen/internal/llm"
 )
 
 type Llama struct {
@@ -30,11 +32,11 @@ type llamaSampler struct {
 	ptr uintptr
 }
 
-func New() *Llama {
+func New() llm.Engine {
 	return &Llama{}
 }
 
-func (l *Llama) LoadModel(path string) error {
+func (l *Llama) LoadModel(ctx context.Context, path string) error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
@@ -51,7 +53,7 @@ func (l *Llama) LoadModel(path string) error {
 		return err
 	}
 
-	ctx, err := createContext(model)
+	llamaCtx, err := createContext(model)
 	if err != nil {
 		freeModel(model)
 		return err
@@ -59,20 +61,20 @@ func (l *Llama) LoadModel(path string) error {
 
 	sampler, err := createSampler()
 	if err != nil {
-		freeContext(ctx)
+		freeContext(llamaCtx)
 		freeModel(model)
 		return err
 	}
 
 	l.model = model
-	l.ctx = ctx
+	l.ctx = llamaCtx
 	l.sampler = sampler
 	l.modelPath = path
 
 	return nil
 }
 
-func (l *Llama) Generate(ctx context.Context, prompt string) (string, error) {
+func (l *Llama) Generate(ctx context.Context, req llm.GenerateRequest) (string, error) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
@@ -84,7 +86,7 @@ func (l *Llama) Generate(ctx context.Context, prompt string) (string, error) {
 		return "", fmt.Errorf("llama: model is not loaded")
 	}
 
-	return generate(ctx, l.model, l.ctx, l.sampler, prompt)
+	return generate(ctx, l.model, l.ctx, l.sampler, req)
 }
 
 func (l *Llama) Close() error {
