@@ -208,6 +208,26 @@ func generate(
 	if tokenCount < 0 {
 		return "", fmt.Errorf("llama: failed to tokenize prompt")
 	}
+	tokenCount = C.int32_t(len(tokens))
+
+	contextSize := C.llama_n_ctx_seq(cCtx)
+	if contextSize == 0 {
+		return "", fmt.Errorf("llama: context size is zero")
+	}
+	if C.uint32_t(tokenCount) > contextSize {
+		return "", fmt.Errorf("llama: prompt has %d tokens, exceeding context size %d", tokenCount, contextSize)
+	}
+
+	// Sampling the final allowed token does not require adding it back to KV memory.
+	maxContextTokens := int(contextSize) - int(tokenCount) + 1
+	if req.MaxTokens > maxContextTokens {
+		req.MaxTokens = maxContextTokens
+	}
+	if req.MaxTokens <= 0 {
+		return "", fmt.Errorf("llama: no context space remains for generation")
+	}
+
+	C.llama_memory_clear(C.llama_get_memory(cCtx), true)
 
 	// Create batch.
 	batch := C.llama_batch_ext_init(cCtx)
@@ -273,6 +293,9 @@ func generate(
 		}
 
 		output = append(output, piece...)
+		if i+1 == req.MaxTokens {
+			break
+		}
 
 		// Prepare batch for the next token.
 		C.llama_batch_ext_clear(batch)
@@ -304,6 +327,9 @@ func generate(
 		)
 
 		if result != 0 {
+			if result == 1 {
+				return string(output), nil
+			}
 			return string(output), fmt.Errorf("llama: token processing failed: %d", result)
 		}
 	}

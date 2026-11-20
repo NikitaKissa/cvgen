@@ -42,6 +42,17 @@ func Load(path string) (cv.CV, error) {
 	return model, nil
 }
 
+func LoadFromString(data string) (cv.CV, error) {
+	parser := input_json.New()
+
+	model, err := parser.Parse(strings.NewReader(data))
+	if err != nil {
+		return cv.CV{}, fmt.Errorf("%w: %s", ErrParsing, err)
+	}
+
+	return model, nil
+}
+
 func newParser(path string) (Parser, error) {
 	ext := filepath.Ext(path)
 
